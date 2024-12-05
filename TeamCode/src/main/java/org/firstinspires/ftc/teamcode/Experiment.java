@@ -96,11 +96,11 @@ public class Experiment extends LinearOpMode {
                 leftElevator.setPower(1.0);
             } else if (gamepad1.left_bumper && rightElevatorPosition > 20 && leftElevatorPosition > 20) {
                 // Lower elevator
-                rightElevator.setPower(-0.7);
-                leftElevator.setPower(-0.7);
+                rightElevator.setPower(-1);
+                leftElevator.setPower(-1);
             } else {
-                rightElevator.setPower(0);
-                leftElevator.setPower(0);
+                rightElevator.setPower(1);
+                leftElevator.setPower(1);
             }
 
             // Existing code for servos and claw control
