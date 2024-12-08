@@ -3,15 +3,15 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Don Bosco TeleOp", group="Linear OpMode")
+@TeleOp(name="Official BadWolf", group="Linear OpMode")
 public class BadWolfTeleOp extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront = null;
-    private boolean grip = true;
     private DcMotor leftBack = null;
     private DcMotor rightFront = null;
     private DcMotor rightBack = null;
@@ -44,8 +44,8 @@ public class BadWolfTeleOp extends LinearOpMode {
         rightElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        rightElevator.setDirection(DcMotor.Direction.REVERSE);
-        leftElevator.setDirection(DcMotor.Direction.FORWARD);
+        rightElevator.setDirection(DcMotor.Direction.FORWARD);
+        leftElevator.setDirection(DcMotor.Direction.REVERSE);
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
@@ -56,6 +56,7 @@ public class BadWolfTeleOp extends LinearOpMode {
         rightElevatorServo.setPosition(1); // Initial position for right elevator servo
         leftElevatorServo.setPosition(0);  // Initial position for left elevator servo
         masterClaw.setPosition(0.35);         // Initial position for master claw
+
 
         telemetry.addData("Status", "Ready To Start");
         telemetry.update();
@@ -89,7 +90,7 @@ public class BadWolfTeleOp extends LinearOpMode {
             int leftElevatorPosition = leftElevator.getCurrentPosition();
 
             if (gamepad1.right_bumper && rightElevatorPosition < 4800 && leftElevatorPosition < 4800) {
-                // Raise elevator
+                // Raise elevator and also tune for new Misumi and new ultra planetary gears.
                 rightElevator.setPower(1.0);
                 leftElevator.setPower(1.0);
             } else if (gamepad1.left_bumper && rightElevatorPosition > 20 && leftElevatorPosition > 20) {
@@ -100,6 +101,7 @@ public class BadWolfTeleOp extends LinearOpMode {
                 rightElevator.setPower(0);
                 leftElevator.setPower(0);
             }
+
 
             // Existing code for servos and claw control
             if (gamepad1.left_trigger > 0.1 || gamepad2.left_trigger > 0.1) { // gamepad 1 master control arm
@@ -113,7 +115,7 @@ public class BadWolfTeleOp extends LinearOpMode {
             if (gamepad1.a || gamepad2.a) {
                 masterClaw.setPosition(0.8);
             } else {
-                masterClaw.setPosition(0.4);
+                masterClaw.setPosition(0);
             }
 
             // Telemetry data
@@ -121,8 +123,7 @@ public class BadWolfTeleOp extends LinearOpMode {
             telemetry.addData("Motors", "leftFront (%.2f), rightFront (%.2f)", leftFrontPower, rightFrontPower);
             telemetry.addData("Motors", "leftBack (%.2f), rightBack (%.2f)", leftBackPower, rightBackPower);
             telemetry.addData("Accuracy Mode Speed", speedMultiplier);
-            telemetry.addData("Elevator Position", "Right: %d, Left: %d",
-                    rightElevatorPosition, leftElevatorPosition);
+            telemetry.addData("Elevator Position", "Right: %d, Left: %d", rightElevatorPosition, leftElevatorPosition);
             telemetry.update();
         }
     }

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -45,8 +46,8 @@ public class Experiment extends LinearOpMode {
         rightElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        rightElevator.setDirection(DcMotor.Direction.REVERSE);
-        leftElevator.setDirection(DcMotor.Direction.FORWARD);
+        rightElevator.setDirection(DcMotor.Direction.FORWARD);
+        leftElevator.setDirection(DcMotor.Direction.REVERSE);
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
@@ -98,9 +99,12 @@ public class Experiment extends LinearOpMode {
                 // Lower elevator
                 rightElevator.setPower(-0.7);
                 leftElevator.setPower(-0.7);
-            } else {
-                rightElevator.setPower(0);
-                leftElevator.setPower(0);
+            }
+
+            // Keep power unchanged after action
+            if (gamepad1.right_bumper) {
+                rightElevator.setPower(1.0);
+                leftElevator.setPower(1.0);
             }
 
             // Existing code for servos and claw control
@@ -115,7 +119,7 @@ public class Experiment extends LinearOpMode {
             if (gamepad1.a || gamepad2.a) {
                 masterClaw.setPosition(0.8);
             } else {
-                masterClaw.setPosition(0.4);
+                masterClaw.setPosition(0);
             }
 
             // Claw rotation control
