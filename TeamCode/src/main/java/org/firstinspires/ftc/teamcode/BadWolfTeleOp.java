@@ -55,7 +55,7 @@ public class BadWolfTeleOp extends LinearOpMode {
         // Set initial servo positions
         rightElevatorServo.setPosition(1); // Initial position for right elevator servo
         leftElevatorServo.setPosition(0);  // Initial position for left elevator servo
-        masterClaw.setPosition(0.35);         // Initial position for master claw
+        masterClaw.setPosition(1);         // Initial position for master claw
 
 
         telemetry.addData("Status", "Ready To Start");
@@ -89,7 +89,7 @@ public class BadWolfTeleOp extends LinearOpMode {
             int rightElevatorPosition = rightElevator.getCurrentPosition();
             int leftElevatorPosition = leftElevator.getCurrentPosition();
 
-            if (gamepad1.right_bumper && rightElevatorPosition < 4800 && leftElevatorPosition < 4800) {
+            if (gamepad1.right_bumper && rightElevatorPosition < 2000 && leftElevatorPosition < 2000) {
                 // Raise elevator and also tune for new Misumi and new ultra planetary gears.
                 rightElevator.setPower(1.0);
                 leftElevator.setPower(1.0);
@@ -105,17 +105,17 @@ public class BadWolfTeleOp extends LinearOpMode {
 
             // Existing code for servos and claw control
             if (gamepad1.left_trigger > 0.1 || gamepad2.left_trigger > 0.1) { // gamepad 1 master control arm
-                rightElevatorServo.setPosition(0.275); // Lower the right elevator servo
-                leftElevatorServo.setPosition(0.725);  // Lower the left elevator servo
+                rightElevatorServo.setPosition(0.3); // Lower the right elevator servo
+                leftElevatorServo.setPosition(0.6);  // Lower the left elevator servo
             } else {
-                rightElevatorServo.setPosition(0.725); // Reset right elevator servo
-                leftElevatorServo.setPosition(0.275);  // Reset left elevator servo
+                rightElevatorServo.setPosition(1); // Reset right elevator servo
+                leftElevatorServo.setPosition(0);  // Reset left elevator servo
             }
 
             if (gamepad1.a || gamepad2.a) {
-                masterClaw.setPosition(0.8);
+                masterClaw.setPosition(0.6);
             } else {
-                masterClaw.setPosition(0);
+                masterClaw.setPosition(0.05);//grip of the claw
             }
 
             // Telemetry data
