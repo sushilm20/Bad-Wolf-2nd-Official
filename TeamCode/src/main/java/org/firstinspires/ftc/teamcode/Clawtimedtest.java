@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Experiment", group="Linear OpMode")
-public class Experiment extends LinearOpMode {
+@TeleOp(name="Elapsed time test", group="Linear OpMode")
+public class Clawtimedtest extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront = null;
     private DcMotor leftBack = null;
@@ -39,7 +39,7 @@ public class Experiment extends LinearOpMode {
         rightElevatorServo = hardwareMap.get(Servo.class, "rightElevatorServo");
         leftElevatorServo = hardwareMap.get(Servo.class, "leftElevatorServo");
         masterClaw = hardwareMap.get(Servo.class, "masterClaw");
-        clawRotation = hardwareMap.get(Servo.class, "clawRotation"); //
+        clawRotation = hardwareMap.get(Servo.class, "clawRotation"); // Initialize the new servo
 
         rightElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -60,7 +60,7 @@ public class Experiment extends LinearOpMode {
         // Set initial servo positions
         rightElevatorServo.setPosition(1); // Initial position for right elevator servo
         leftElevatorServo.setPosition(0);  // Initial position for left elevator servo
-        masterClaw.setPosition(1);      // Initial position for master claw. Open cuz we hit 18in if closed.
+        masterClaw.setPosition(0.35);      // Initial position for master claw
         clawRotation.setPosition(0);       // Initial position for claw rotation
 
         telemetry.addData("Status", "Ready To Start");
@@ -94,40 +94,40 @@ public class Experiment extends LinearOpMode {
             int rightElevatorPosition = rightElevator.getCurrentPosition();
             int leftElevatorPosition = leftElevator.getCurrentPosition();
 
+
             if (gamepad1.right_bumper && rightElevatorPosition < 2000 && leftElevatorPosition < 2000) {
                 // Raise elevator and also tune for new Misumi and new ultra planetary gears.
-                rightElevator.setPower(0.7);//elevator power when going up.
-                leftElevator.setPower(0.7); //elevator power when going down.
-            } else if (gamepad1.left_bumper && rightElevatorPosition > 0 && leftElevatorPosition > 0) {
+                rightElevator.setPower(1.0);
+                leftElevator.setPower(1.0);
+            } else if (gamepad1.left_bumper && rightElevatorPosition > 20 && leftElevatorPosition > 20) {
                 // Lower elevator
                 rightElevator.setPower(-0.7);
                 leftElevator.setPower(-0.7);
             } else {
-                // Stall and hold position, still have to complete
                 rightElevator.setPower(0);
                 leftElevator.setPower(0);
             }
 
+
             // Claw rotation control
-            if (gamepad1.dpad_left || gamepad2.dpad_left) {
-                clawRotation.setPosition(0.35);
-            } else if (gamepad1.dpad_right || gamepad2.dpad_right) {
+            if (gamepad1.dpad_left) {
+                clawRotation.setPosition(0.375);
+            } else if (gamepad1.dpad_right) {
                 clawRotation.setPosition(0);
             }
 
-            // Existing code for servos and claw control
-            if (gamepad1.left_trigger > 0.1 || gamepad2.left_trigger > 0.1) { // gamepad 1 master control arm
-                rightElevatorServo.setPosition(0.3); // Lower the right elevator servo
-                leftElevatorServo.setPosition(0.6);  // Lower the left elevator servo
-            } else {
-                rightElevatorServo.setPosition(0.6); // Reset right elevator servo
-                leftElevatorServo.setPosition(0.3);  // Reset left elevator servo
+            // Servo control using Y and X buttons
+            if (gamepad1.y) {
+                // Move servos to specific positions
+                rightElevatorServo.setPosition(0.55);
+                leftElevatorServo.setPosition(0.45);
             }
 
-            if (gamepad1.a || gamepad2.a) {
-                masterClaw.setPosition(0.4);
-            } else {
-                masterClaw.setPosition(0);
+            if (gamepad1.x) {
+                // Check if servos are in the correct positions for grab
+                if (rightElevatorServo.getPosition() == 0.55 && leftElevatorServo.getPosition() == 0.45) {
+                    performGrab();
+                }
             }
 
             // Telemetry data
@@ -138,5 +138,42 @@ public class Experiment extends LinearOpMode {
             telemetry.addData("Elevator Position", "Right: %d, Left: %d", rightElevatorPosition, leftElevatorPosition);
             telemetry.update();
         }
+    }
+
+
+    private void performGrab() {
+        ElapsedTime timer = new ElapsedTime();
+
+        // Open masterClaw to position 0.5
+        masterClaw.setPosition(0.5);
+        timer.reset();
+        while (timer.seconds() < 0.5 && opModeIsActive()) {
+            // Wait for 0.5 seconds
+            telemetry.addData("Grab Step", "Opening Claw: %.2f", timer.seconds());
+            telemetry.update();
+        }
+
+        // Move servos to new positions
+        rightElevatorServo.setPosition(0.6);
+        leftElevatorServo.setPosition(0.4);
+        timer.reset();
+        while (timer.seconds() < 1 && opModeIsActive()) {
+            // Wait for 1 second
+            telemetry.addData("Grab Step", "Moving Servos: %.2f", timer.seconds());
+            telemetry.update();
+        }
+
+        // Close masterClaw to position 0
+        masterClaw.setPosition(0);
+
+        // Wait until the claw is closed
+        while (masterClaw.getPosition() != 0 && opModeIsActive()) {
+            telemetry.addData("Grab Step", "Closing Claw");
+            telemetry.update();
+        }
+
+        // Set right and left servo positions to 0 and 1 respectively
+        rightElevatorServo.setPosition(0);
+        leftElevatorServo.setPosition(1);
     }
 }

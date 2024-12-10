@@ -10,34 +10,37 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Official BadWolf", group="Linear OpMode")
 public class BadWolfTeleOp extends LinearOpMode {
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFront = null;
-    private DcMotor leftBack = null;
-    private DcMotor rightFront = null;
-    private DcMotor rightBack = null;
-    private DcMotor rightElevator = null;
-    private DcMotor leftElevator = null;
-    private Servo rightElevatorServo = null;
-    private Servo leftElevatorServo = null;
-    private Servo masterClaw = null;
-    private boolean masterClawPosition = false;
-    private double speedMultiplier = 1.0; // Speed multiplier
+private ElapsedTime runtime = new ElapsedTime();
+private DcMotor leftFront = null;
+private DcMotor leftBack = null;
+private DcMotor rightFront = null;
+private DcMotor rightBack = null;
+private DcMotor rightElevator = null;
+private DcMotor leftElevator = null;
+private Servo rightElevatorServo = null;
+private Servo leftElevatorServo = null;
+private Servo masterClaw = null;
+private Servo clawRotation = null; // New servo variable
+private boolean masterClawPosition = false;
+private double speedMultiplier = 1.0; // Speed multiplier
 
-    @Override
-    public void runOpMode() {
-        telemetry.addData("Status", "No status for you");
-        telemetry.update();
+@Override
+public void runOpMode() {
+    telemetry.addData("Status", "No status for you");
+    telemetry.update();
 
-        // Initialize hardware variables
-        leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
-        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        leftBack = hardwareMap.get(DcMotor.class, "leftBack");
-        rightBack = hardwareMap.get(DcMotor.class, "rightBack");
-        rightElevator = hardwareMap.get(DcMotor.class, "rightElevator");
-        leftElevator = hardwareMap.get(DcMotor.class, "leftElevator");
-        rightElevatorServo = hardwareMap.get(Servo.class, "rightElevatorServo");
-        leftElevatorServo = hardwareMap.get(Servo.class, "leftElevatorServo");
-        masterClaw = hardwareMap.get(Servo.class, "masterClaw");
+    // Initialize hardware variables
+    leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
+    rightFront = hardwareMap.get(DcMotor.class, "rightFront");
+    leftBack = hardwareMap.get(DcMotor.class, "leftBack");
+    rightBack = hardwareMap.get(DcMotor.class, "rightBack");
+    rightElevator = hardwareMap.get(DcMotor.class, "rightElevator");
+    leftElevator = hardwareMap.get(DcMotor.class, "leftElevator");
+    rightElevatorServo = hardwareMap.get(Servo.class, "rightElevatorServo");
+    leftElevatorServo = hardwareMap.get(Servo.class, "leftElevatorServo");
+    masterClaw = hardwareMap.get(Servo.class, "masterClaw");
+    clawRotation = hardwareMap.get(Servo.class, "clawRotation"); // problemo
+
 
         rightElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -116,6 +119,13 @@ public class BadWolfTeleOp extends LinearOpMode {
                 masterClaw.setPosition(0.6);
             } else {
                 masterClaw.setPosition(0.05);//grip of the claw
+            }
+
+            // Claw rotation control
+            if (gamepad1.dpad_left || gamepad2.dpad_left) {
+                clawRotation.setPosition(0.35);
+            } else if (gamepad1.dpad_right || gamepad2.dpad_right) {
+                clawRotation.setPosition(0);
             }
 
             // Telemetry data
