@@ -26,7 +26,7 @@ public class Clawtimedtest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        telemetry.addData("Status", "yeet skibidi");
+        telemetry.addData("Status", "yeet skibidi sigma is ready for launch");
         telemetry.update();
 
         // Initialize hardware variables
@@ -39,17 +39,17 @@ public class Clawtimedtest extends LinearOpMode {
         rightElevatorServo = hardwareMap.get(Servo.class, "rightElevatorServo");
         leftElevatorServo = hardwareMap.get(Servo.class, "leftElevatorServo");
         masterClaw = hardwareMap.get(Servo.class, "masterClaw");
-        clawRotation = hardwareMap.get(Servo.class, "clawRotation"); // Initialize the new servo
+        clawRotation = hardwareMap.get(Servo.class, "clawRotation"); //sigma rotate works
 
         rightElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        rightElevator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightElevator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); ///we not using
         leftElevator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        rightElevator.setDirection(DcMotor.Direction.FORWARD);
+        rightElevator.setDirection(DcMotor.Direction.FORWARD); //so sigma ele don spin the other way
         leftElevator.setDirection(DcMotor.Direction.REVERSE);
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
@@ -115,24 +115,24 @@ public class Clawtimedtest extends LinearOpMode {
             }
 
             // Claw rotation control
-            if (gamepad1.dpad_left) {
+            if (gamepad1.dpad_left || gamepad2.dpad_left) {
                 clawRotation.setPosition(0.4);
             } else if (gamepad1.dpad_right) {
                 clawRotation.setPosition(0);
             }
 
             // Servo control using Y and X buttons
-            if (gamepad1.y) {
+            if (gamepad1.y||gamepad2.y) {//to set to calculate angle / distance
                 // Move servos to specific positions
                 rightElevatorServo.setPosition(0.5);
                 leftElevatorServo.setPosition(0.5);
                 masterClaw.setPosition(0);
             }
 
-            if (gamepad1.x) {
+            if (gamepad1.x||gamepad2.x) {
                 // Check if servos are in the correct positions for grab
                 if (rightElevatorServo.getPosition() == 0.5 && leftElevatorServo.getPosition() == 0.5) {
-                    performGrab();
+                    performGrab();//sigma grab
                 }
             }
 
