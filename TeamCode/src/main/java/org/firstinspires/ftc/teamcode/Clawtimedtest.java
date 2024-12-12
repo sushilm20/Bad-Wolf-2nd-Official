@@ -26,7 +26,7 @@ public class Clawtimedtest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        telemetry.addData("Status", "No status for you");
+        telemetry.addData("Status", "yeet skibidi");
         telemetry.update();
 
         // Initialize hardware variables
@@ -95,23 +95,28 @@ public class Clawtimedtest extends LinearOpMode {
             int leftElevatorPosition = leftElevator.getCurrentPosition();
 
 
-            if (gamepad1.right_bumper && rightElevatorPosition < 2000 && leftElevatorPosition < 2000) {
+            if (gamepad1.right_bumper && rightElevatorPosition < 2100 && leftElevatorPosition < 2100) {
                 // Raise elevator and also tune for new Misumi and new ultra planetary gears.
                 rightElevator.setPower(1.0);
                 leftElevator.setPower(1.0);
             } else if (gamepad1.left_bumper && rightElevatorPosition > 20 && leftElevatorPosition > 20) {
                 // Lower elevator
-                rightElevator.setPower(-0.7);
-                leftElevator.setPower(-0.7);
+                rightElevator.setPower(-0.5);
+                leftElevator.setPower(-0.5);
             } else {
                 rightElevator.setPower(0);
                 leftElevator.setPower(0);
             }
 
+            if (gamepad1.a || gamepad2.a) {
+                masterClaw.setPosition(0.6);
+            } else {
+                masterClaw.setPosition(0.0);//grip of the claw
+            }
 
             // Claw rotation control
             if (gamepad1.dpad_left) {
-                clawRotation.setPosition(0.375);
+                clawRotation.setPosition(0.4);
             } else if (gamepad1.dpad_right) {
                 clawRotation.setPosition(0);
             }
@@ -119,13 +124,14 @@ public class Clawtimedtest extends LinearOpMode {
             // Servo control using Y and X buttons
             if (gamepad1.y) {
                 // Move servos to specific positions
-                rightElevatorServo.setPosition(0.55);
-                leftElevatorServo.setPosition(0.45);
+                rightElevatorServo.setPosition(0.5);
+                leftElevatorServo.setPosition(0.5);
+                masterClaw.setPosition(0);
             }
 
             if (gamepad1.x) {
                 // Check if servos are in the correct positions for grab
-                if (rightElevatorServo.getPosition() == 0.55 && leftElevatorServo.getPosition() == 0.45) {
+                if (rightElevatorServo.getPosition() == 0.5 && leftElevatorServo.getPosition() == 0.5) {
                     performGrab();
                 }
             }
@@ -144,18 +150,18 @@ public class Clawtimedtest extends LinearOpMode {
     private void performGrab() {
         ElapsedTime timer = new ElapsedTime();
 
-        // Open masterClaw to position 0.5
-        masterClaw.setPosition(0.5);
+        // Open masterClaw to position 0.4
+        masterClaw.setPosition(0.4);
         timer.reset();
-        while (timer.seconds() < 0.5 && opModeIsActive()) {
+        while (timer.seconds() < 0.2 && opModeIsActive()) {
             // Wait for 0.5 seconds
             telemetry.addData("Grab Step", "Opening Claw: %.2f", timer.seconds());
             telemetry.update();
         }
 
         // Move servos to new positions
-        rightElevatorServo.setPosition(0.6);
-        leftElevatorServo.setPosition(0.4);
+        rightElevatorServo.setPosition(0.4);
+        leftElevatorServo.setPosition(0.6);
         timer.reset();
         while (timer.seconds() < 1 && opModeIsActive()) {
             // Wait for 1 second

@@ -24,6 +24,7 @@ public class Experiment extends LinearOpMode {
     private boolean masterClawPosition = false;
     private double speedMultiplier = 1.0; // Speed multiplier
 
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "No status for you");
@@ -104,8 +105,8 @@ public class Experiment extends LinearOpMode {
                 leftElevator.setPower(-0.7);
             } else {
                 // Stall and hold position, still have to complete
-                rightElevator.setPower(0);
-                leftElevator.setPower(0);
+                rightElevator.setPower(0.00000005);
+                leftElevator.setPower(0.000000005);
             }
 
             // Claw rotation control
@@ -117,11 +118,11 @@ public class Experiment extends LinearOpMode {
 
             // Existing code for servos and claw control
             if (gamepad1.left_trigger > 0.1 || gamepad2.left_trigger > 0.1) { // gamepad 1 master control arm
-                rightElevatorServo.setPosition(0.3); // Lower the right elevator servo
+                rightElevatorServo.setPosition(0.4); // Lower the right elevator servo
                 leftElevatorServo.setPosition(0.6);  // Lower the left elevator servo
             } else {
                 rightElevatorServo.setPosition(0.6); // Reset right elevator servo
-                leftElevatorServo.setPosition(0.3);  // Reset left elevator servo
+                leftElevatorServo.setPosition(0.4);  // Reset left elevator servo
             }
 
             if (gamepad1.a || gamepad2.a) {
