@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Experiment", group="Linear OpMode")
-public class Experiment extends LinearOpMode {
+@TeleOp(name="Speed Update and Claw", group="Linear OpMode")
+public class SpeedUpdate extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront = null;
     private DcMotor leftBack = null;
