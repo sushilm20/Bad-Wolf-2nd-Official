@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Experiment", group="Linear OpMode")
+@TeleOp(name="Experiment func and claw", group="Linear OpMode")
 public class Experiment extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront = null;
@@ -22,7 +22,7 @@ public class Experiment extends LinearOpMode {
     private Servo masterClaw = null;
     private Servo clawRotation = null; // New servo variable
     private boolean masterClawPosition = false;
-    private double speedMultiplier = 1.0; // Speed multiplier
+    private double speedMultiplier = 0.3; // Speed multiplier with default value
 
     @Override
     public void runOpMode() {
@@ -60,10 +60,10 @@ public class Experiment extends LinearOpMode {
         // Set initial servo positions
         rightElevatorServo.setPosition(1); // Initial position for right elevator servo
         leftElevatorServo.setPosition(0);  // Initial position for left elevator servo
-        masterClaw.setPosition(0.35);      // Initial position for master claw
+        masterClaw.setPosition(1);      // Initial position for master claw
         clawRotation.setPosition(0);       // Initial position for claw rotation
 
-        telemetry.addData("Status", "Ready To Start");
+        telemetry.addData("Status", "Skibidi Wolf ready for Launch");
         telemetry.update();
 
         waitForStart();
@@ -71,7 +71,7 @@ public class Experiment extends LinearOpMode {
 
         while (opModeIsActive()) {
             // Change speed multiplier based on right trigger
-            speedMultiplier = gamepad1.right_trigger > 0.1 ? 0.3 : 1.0;
+            speedMultiplier = gamepad1.right_trigger > 0.1 ? 1.0 : 0.3;
 
             // Mecanum wheel drive calculations
             double drive = -gamepad1.left_stick_y; // Forward/Backward
@@ -94,8 +94,7 @@ public class Experiment extends LinearOpMode {
             int rightElevatorPosition = rightElevator.getCurrentPosition();
             int leftElevatorPosition = leftElevator.getCurrentPosition();
 
-
-            if (gamepad1.right_bumper && rightElevatorPosition < 2100 && leftElevatorPosition < 2100) {
+            if (gamepad1.right_bumper && rightElevatorPosition < 2200 && leftElevatorPosition < 2200) {
                 // Raise elevator and also tune for new Misumi and new ultra planetary gears.
                 rightElevator.setPower(1.0);
                 leftElevator.setPower(1.0);
@@ -109,7 +108,7 @@ public class Experiment extends LinearOpMode {
             }
 
             if (gamepad1.a || gamepad2.a) {
-                masterClaw.setPosition(0.6);
+                masterClaw.setPosition(0.4);
             } else {
                 masterClaw.setPosition(0.0);//grip of the claw
             }
@@ -124,15 +123,14 @@ public class Experiment extends LinearOpMode {
             // Servo control using Y and X buttons
             if (gamepad1.y) {
                 // Move servos to specific positions
-                rightElevatorServo.setPosition(0.5);
-                leftElevatorServo.setPosition(0.5);
-                masterClaw.setPosition(0);
+                rightElevatorServo.setPosition(0.40);
+                leftElevatorServo.setPosition(0.6);
             }
 
             if (gamepad1.x) {
                 // Check if servos are in the correct positions for grab
-                if (rightElevatorServo.getPosition() == 0.5 && leftElevatorServo.getPosition() == 0.5) {
-                    performGrab();
+                if (rightElevatorServo.getPosition() == 0.4 && leftElevatorServo.getPosition() == 0.6) {
+                    performGrab();//my sigma function runn pleasee
                 }
             }
 
@@ -146,7 +144,6 @@ public class Experiment extends LinearOpMode {
         }
     }
 
-
     private void performGrab() {
         ElapsedTime timer = new ElapsedTime();
 
@@ -154,14 +151,14 @@ public class Experiment extends LinearOpMode {
         masterClaw.setPosition(0.4);
         timer.reset();
         while (timer.seconds() < 0.2 && opModeIsActive()) {
-            // Wait for 0.5 seconds
+            // Wait for 0.2 seconds
             telemetry.addData("Grab Step", "Opening Claw: %.2f", timer.seconds());
             telemetry.update();
         }
 
         // Move servos to new positions
-        rightElevatorServo.setPosition(0.4);
-        leftElevatorServo.setPosition(0.6);
+        rightElevatorServo.setPosition(0.3);
+        leftElevatorServo.setPosition(0.7);
         timer.reset();
         while (timer.seconds() < 1 && opModeIsActive()) {
             // Wait for 1 second
@@ -178,8 +175,15 @@ public class Experiment extends LinearOpMode {
             telemetry.update();
         }
 
-        // Set right and left servo positions to 0 and 1 respectively
-        rightElevatorServo.setPosition(0);
-        leftElevatorServo.setPosition(1);
+        // Wait for 0.5 seconds before setting servos
+        timer.reset();
+        while (timer.seconds() < 0.3 && opModeIsActive()) {
+            telemetry.addData("Grab Step", "Waiting before setting servos: %.2f", timer.seconds());
+            telemetry.update();
+        }
+
+        // Set right and left servo positions to 1 and 0 respectively
+        rightElevatorServo.setPosition(1);
+        leftElevatorServo.setPosition(0);
     }
 }
