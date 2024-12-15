@@ -114,20 +114,31 @@ public class BadWolfTeleOp extends LinearOpMode {
             }
 
             // Claw rotation control
-            if (gamepad1.dpad_left) {
-                clawRotation.setPosition(0.4);
-            } else if (gamepad1.dpad_right) {
-                clawRotation.setPosition(0);
+            if (gamepad1.dpad_left || gamepad2.dpad_left) {
+                clawRotation.setPosition(0.4);//pick up horizontal samples
+            } else if (gamepad1.dpad_right || gamepad2.dpad_right) {
+                clawRotation.setPosition(0); // reset to legal point
+            } else if ((gamepad1.dpad_down || gamepad2.dpad_down)) {
+                clawRotation.setPosition(0.2); //diagonal right
+            } else if ((gamepad1.dpad_up || gamepad2.dpad_up)) {
+                clawRotation.setPosition(0.8); //flips the claw
             }
 
             // Servo control using Y and X buttons
-            if (gamepad1.y) {
+            if (gamepad1.y || gamepad2.y) {
                 // Move servos to specific positions
                 rightElevatorServo.setPosition(0.40);
                 leftElevatorServo.setPosition(0.6);
             }
 
-            if (gamepad1.x) {
+            if (gamepad1.b || gamepad2.b) {
+                // reset
+                rightElevatorServo.setPosition(1);
+                leftElevatorServo.setPosition(0);
+                clawRotation.setPosition(0);
+            }
+
+            if (gamepad1.x || gamepad2.x) {
                 // Check if servos are in the correct positions for grab
                 if (rightElevatorServo.getPosition() == 0.4 && leftElevatorServo.getPosition() == 0.6) {
                     performGrab();//my sigma function runn pleasee
@@ -160,7 +171,7 @@ public class BadWolfTeleOp extends LinearOpMode {
         rightElevatorServo.setPosition(0.3);
         leftElevatorServo.setPosition(0.7);
         timer.reset();
-        while (timer.seconds() < 1 && opModeIsActive()) {
+        while (timer.seconds() < 0.5 && opModeIsActive()) {
             // Wait for 1 second
             telemetry.addData("Grab Step", "Moving Servos: %.2f", timer.seconds());
             telemetry.update();

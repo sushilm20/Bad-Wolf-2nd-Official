@@ -65,7 +65,7 @@ public class Auto extends LinearOpMode {
         rightFront.setPower(TURN_SPEED);
         rightBack.setPower(TURN_SPEED);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1)) {
+        while (opModeIsActive() && (runtime.seconds() < 0.7)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -90,6 +90,5 @@ public class Auto extends LinearOpMode {
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        sleep(1000);
     }
 }
