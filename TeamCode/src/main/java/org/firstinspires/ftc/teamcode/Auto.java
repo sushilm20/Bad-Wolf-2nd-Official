@@ -50,10 +50,11 @@ public class Auto extends LinearOpMode {
         // Set initial servo positions
         rightElevatorServo.setPosition(1); // Initial position for right elevator servo
         leftElevatorServo.setPosition(0);  // Initial position for left elevator servo
-        masterClaw.setPosition(0.35);         // Initial position for master claw
+        masterClaw.setPosition(1);         // Initial position for master claw
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
+        telemetry.speak("Sigma sigma sigma is ready for launch.");
         telemetry.update();
 
         // Wait for the game to start (driver presses START)
@@ -76,7 +77,7 @@ public class Auto extends LinearOpMode {
         rightFront.setPower(FORWARD_SPEED);
         rightBack.setPower(FORWARD_SPEED);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.8)) {
+        while (opModeIsActive() && (runtime.seconds() < 0.5)) {
             telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }

@@ -21,7 +21,6 @@ public class BadWolfTeleOp extends LinearOpMode {
     private Servo leftElevatorServo = null;
     private Servo masterClaw = null;
     private Servo clawRotation = null; // New servo variable
-    private boolean masterClawPosition = false;
     private double speedMultiplier = 0.3; // Speed multiplier with default value
 
     @Override
@@ -58,12 +57,14 @@ public class BadWolfTeleOp extends LinearOpMode {
         rightBack.setDirection(DcMotor.Direction.FORWARD);
 
         // Set initial servo positions
-        rightElevatorServo.setPosition(1); // Initial position for right elevator servo
-        leftElevatorServo.setPosition(0);  // Initial position for left elevator servo
+        rightElevatorServo.setPosition(0.1); // Initial position for right elevator servo
+        leftElevatorServo.setPosition(0.0);  // Initial position for left elevator servo
         masterClaw.setPosition(1);      // Initial position for master claw
         clawRotation.setPosition(0);       // Initial position for claw rotation
 
         telemetry.addData("Status", "Skibidi Wolf ready for Launch");
+        telemetry.speak("Sigma sigma sigma is ready for launch.");
+
         telemetry.update();
 
         waitForStart();
@@ -71,7 +72,8 @@ public class BadWolfTeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
             // Change speed multiplier based on right trigger
-            speedMultiplier = gamepad1.right_trigger > 0.1 ? 1.0 : 0.3;
+            speedMultiplier = (gamepad1.left_trigger > 0.1 ? 1.0 : 0.3);
+
 
             // Mecanum wheel drive calculations
             double drive = -gamepad1.left_stick_y; // Forward/Backward
@@ -94,7 +96,7 @@ public class BadWolfTeleOp extends LinearOpMode {
             int rightElevatorPosition = rightElevator.getCurrentPosition();
             int leftElevatorPosition = leftElevator.getCurrentPosition();
 
-            if (gamepad1.right_bumper && rightElevatorPosition < 2200 && leftElevatorPosition < 2200) {
+            if (gamepad1.right_bumper && rightElevatorPosition < 2250 && leftElevatorPosition < 2250) {
                 // Raise elevator and also tune for new Misumi and new ultra planetary gears.
                 rightElevator.setPower(1.0);
                 leftElevator.setPower(1.0);
@@ -108,7 +110,7 @@ public class BadWolfTeleOp extends LinearOpMode {
             }
 
             if (gamepad1.a || gamepad2.a) {
-                masterClaw.setPosition(0.4);
+                masterClaw.setPosition(0.5);
             } else {
                 masterClaw.setPosition(0.0);//grip of the claw
             }
@@ -127,8 +129,8 @@ public class BadWolfTeleOp extends LinearOpMode {
             // Servo control using Y and X buttons
             if (gamepad1.y || gamepad2.y) {
                 // Move servos to specific positions
-                rightElevatorServo.setPosition(0.40);
-                leftElevatorServo.setPosition(0.6);
+                rightElevatorServo.setPosition(0.41);
+                leftElevatorServo.setPosition(0.59);
             }
 
             if (gamepad1.b || gamepad2.b) {
@@ -140,7 +142,7 @@ public class BadWolfTeleOp extends LinearOpMode {
 
             if (gamepad1.x || gamepad2.x) {
                 // Check if servos are in the correct positions for grab
-                if (rightElevatorServo.getPosition() == 0.4 && leftElevatorServo.getPosition() == 0.6) {
+                if (rightElevatorServo.getPosition() == 0.43 && leftElevatorServo.getPosition() == 0.57) {
                     performGrab();//my sigma function runn pleasee
                 }
             }
