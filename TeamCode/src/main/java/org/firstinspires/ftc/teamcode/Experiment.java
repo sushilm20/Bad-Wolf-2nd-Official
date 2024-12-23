@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Experiment", group="Linear OpMode")
+@TeleOp(name="A Testing", group="Linear OpMode")
 public class Experiment extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront = null;
@@ -24,11 +25,11 @@ public class Experiment extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        telemetry.addData("Status", "yeet skibidi");
+        telemetry.addData("Status", "Sigma skibidi");
         telemetry.update();
 
         // Initialize hardware variables
-        leftFront = hardwareMap.get(DcMotor.class, "leftFront");
+        leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
         leftBack = hardwareMap.get(DcMotor.class, "leftBack");
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
@@ -37,7 +38,7 @@ public class Experiment extends LinearOpMode {
         rightElevatorServo = hardwareMap.get(Servo.class, "rightElevatorServo");
         leftElevatorServo = hardwareMap.get(Servo.class, "leftElevatorServo");
         masterClaw = hardwareMap.get(Servo.class, "masterClaw");
-        clawRotation = hardwareMap.get(Servo.class, "clawRotation"); // Initialize the new servo
+        clawRotation = hardwareMap.get(Servo.class, "clawRotation"); // this init the new servo
 
         rightElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -59,7 +60,7 @@ public class Experiment extends LinearOpMode {
         rightElevatorServo.setPosition(0.75); // Initial position for right elevator servo
         leftElevatorServo.setPosition(0.25);  // Initial position for left elevator servo
         masterClaw.setPosition(0);      // Initial position for master claw
-        clawRotation.setPosition(0.5);       // Initial position for claw rotation
+        clawRotation.setPosition(0.47);       // Initial position for claw rotation
 
         telemetry.addData("Status", "Skibidi Wolf ready for Launch");
         telemetry.speak("Sigma sigma sigma is ready for launch.");
@@ -69,10 +70,14 @@ public class Experiment extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        // Set servo positions after game starts
+        rightElevatorServo.setPosition(0.55);
+        leftElevatorServo.setPosition(0.45);
+        clawRotation.setPosition(0.47);
+
         while (opModeIsActive()) {
             // Change speed multiplier based on right trigger
             speedMultiplier = (gamepad1.left_trigger > 0.1 ? 1.0 : 0.3);
-
 
             // Mecanum wheel drive calculations
             double drive = -gamepad1.left_stick_y; // Forward/Backward
@@ -95,7 +100,7 @@ public class Experiment extends LinearOpMode {
             int rightElevatorPosition = rightElevator.getCurrentPosition();
             int leftElevatorPosition = leftElevator.getCurrentPosition();
 
-            if (gamepad1.right_bumper && rightElevatorPosition < 2350 && leftElevatorPosition < 2350) {
+            if (gamepad1.right_bumper && rightElevatorPosition < 2400 && leftElevatorPosition < 2400) {
                 // Raise elevator and also tune for new Misumi and new ultra planetary gears.
                 rightElevator.setPower(1.0);
                 leftElevator.setPower(1.0);
@@ -104,8 +109,8 @@ public class Experiment extends LinearOpMode {
                 rightElevator.setPower(-0.5);
                 leftElevator.setPower(-0.5);
             } else {
-                rightElevator.setPower(0);
-                leftElevator.setPower(0);
+                rightElevator.setPower(0.0);
+                leftElevator.setPower(0.0);
             }
 
             if (gamepad1.a || gamepad2.a) {
@@ -115,34 +120,33 @@ public class Experiment extends LinearOpMode {
             }
 
             // Claw rotation control
-            // Increase or decrease the servo position by 0.1 with dpad left/right
             if (gamepad1.dpad_left || gamepad2.dpad_left) {
-                clawRotation.setPosition(clawRotation.getPosition() - 0.1); // Decrease position
+                clawRotation.setPosition(0.8);//pick up horizontal samples
             } else if (gamepad1.dpad_right || gamepad2.dpad_right) {
-                clawRotation.setPosition(clawRotation.getPosition() + 0.1); // Increase position
+                clawRotation.setPosition(0.47); // reset to legal point vertical
             } else if ((gamepad1.dpad_down || gamepad2.dpad_down)) {
-                clawRotation.setPosition(1.0); // Set to position 1.0
+                clawRotation.setPosition(0); //diagonal right
             } else if ((gamepad1.dpad_up || gamepad2.dpad_up)) {
-                clawRotation.setPosition(0.5); // Set to position 0.5
+                clawRotation.setPosition(1); //diagonal left
             }
 
             // Servo control using Y and X buttons
             if (gamepad1.y || gamepad2.y) {
                 // Move servos to specific positions
-                rightElevatorServo.setPosition(0.26);//real low to hover
-                leftElevatorServo.setPosition(0.74);
+                rightElevatorServo.setPosition(0.27);//real low to hover
+                leftElevatorServo.setPosition(0.73);
             }
 
             if (gamepad1.b || gamepad2.b) {
                 // reset
                 rightElevatorServo.setPosition(0.55);
                 leftElevatorServo.setPosition(0.45);
-                clawRotation.setPosition(0.2);
+                clawRotation.setPosition(0.47);
             }
 
             if (gamepad1.x || gamepad2.x) {
                 // Check if servos are in the correct positions for grab
-                if (rightElevatorServo.getPosition() == 0.26 && leftElevatorServo.getPosition() == 0.74) {
+                if (rightElevatorServo.getPosition() == 0.27 && leftElevatorServo.getPosition() == 0.73) {
                     performGrab();//my sigma function runn pleasee
                 }
             }
