@@ -57,10 +57,10 @@ public class BadWolfTeleOp extends LinearOpMode {
         rightBack.setDirection(DcMotor.Direction.FORWARD);
 
         // Set initial servo positions
-        rightElevatorServo.setPosition(0.1); // Initial position for right elevator servo
-        leftElevatorServo.setPosition(0.0);  // Initial position for left elevator servo
-        masterClaw.setPosition(1);      // Initial position for master claw
-        clawRotation.setPosition(0);       // Initial position for claw rotation
+        rightElevatorServo.setPosition(0.75); // Initial position for right elevator servo
+        leftElevatorServo.setPosition(0.25);  // Initial position for left elevator servo
+        masterClaw.setPosition(0);      // Initial position for master claw
+        clawRotation.setPosition(0.5);       // Initial position for claw rotation
 
         telemetry.addData("Status", "Skibidi Wolf ready for Launch");
         telemetry.speak("Sigma sigma sigma is ready for launch.");
@@ -96,7 +96,7 @@ public class BadWolfTeleOp extends LinearOpMode {
             int rightElevatorPosition = rightElevator.getCurrentPosition();
             int leftElevatorPosition = leftElevator.getCurrentPosition();
 
-            if (gamepad1.right_bumper && rightElevatorPosition < 2250 && leftElevatorPosition < 2250) {
+            if (gamepad1.right_bumper && rightElevatorPosition < 2350 && leftElevatorPosition < 2350) {
                 // Raise elevator and also tune for new Misumi and new ultra planetary gears.
                 rightElevator.setPower(1.0);
                 leftElevator.setPower(1.0);
@@ -117,11 +117,11 @@ public class BadWolfTeleOp extends LinearOpMode {
 
             // Claw rotation control
             if (gamepad1.dpad_left || gamepad2.dpad_left) {
-                clawRotation.setPosition(0.4);//pick up horizontal samples
+                clawRotation.setPosition(0.1);//pick up horizontal samples
             } else if (gamepad1.dpad_right || gamepad2.dpad_right) {
-                clawRotation.setPosition(0); // reset to legal point
+                clawRotation.setPosition(0.4); // reset to legal point
             } else if ((gamepad1.dpad_down || gamepad2.dpad_down)) {
-                clawRotation.setPosition(0.2); //diagonal right
+                clawRotation.setPosition(0.6); //diagonal right
             } else if ((gamepad1.dpad_up || gamepad2.dpad_up)) {
                 clawRotation.setPosition(0.8); //flips the claw
             }
@@ -129,20 +129,20 @@ public class BadWolfTeleOp extends LinearOpMode {
             // Servo control using Y and X buttons
             if (gamepad1.y || gamepad2.y) {
                 // Move servos to specific positions
-                rightElevatorServo.setPosition(0.41);
-                leftElevatorServo.setPosition(0.59);
+                rightElevatorServo.setPosition(0.26);//real low to hover
+                leftElevatorServo.setPosition(0.74);
             }
 
             if (gamepad1.b || gamepad2.b) {
                 // reset
-                rightElevatorServo.setPosition(1);
-                leftElevatorServo.setPosition(0);
-                clawRotation.setPosition(0);
+                rightElevatorServo.setPosition(0.55);
+                leftElevatorServo.setPosition(0.45);
+                clawRotation.setPosition(0.2);
             }
 
             if (gamepad1.x || gamepad2.x) {
                 // Check if servos are in the correct positions for grab
-                if (rightElevatorServo.getPosition() == 0.43 && leftElevatorServo.getPosition() == 0.57) {
+                if (rightElevatorServo.getPosition() == 0.26 && leftElevatorServo.getPosition() == 0.74) {
                     performGrab();//my sigma function runn pleasee
                 }
             }
@@ -153,6 +153,7 @@ public class BadWolfTeleOp extends LinearOpMode {
             telemetry.addData("Motors", "leftBack (%.2f), rightBack (%.2f)", leftBackPower, rightBackPower);
             telemetry.addData("Accuracy Mode Speed", speedMultiplier);
             telemetry.addData("Elevator Position", "Right: %d, Left: %d", rightElevatorPosition, leftElevatorPosition);
+            telemetry.addData("Claw Position", clawRotation.getPosition());
             telemetry.update();
         }
     }
@@ -161,7 +162,7 @@ public class BadWolfTeleOp extends LinearOpMode {
         ElapsedTime timer = new ElapsedTime();
 
         // Open masterClaw to position 0.4
-        masterClaw.setPosition(0.4);
+        masterClaw.setPosition(0.5);
         timer.reset();
         while (timer.seconds() < 0.2 && opModeIsActive()) {
             // Wait for 0.2 seconds
@@ -170,8 +171,8 @@ public class BadWolfTeleOp extends LinearOpMode {
         }
 
         // Move servos to new positions
-        rightElevatorServo.setPosition(0.3);
-        leftElevatorServo.setPosition(0.7);
+        rightElevatorServo.setPosition(0.23);
+        leftElevatorServo.setPosition(0.77);
         timer.reset();
         while (timer.seconds() < 0.5 && opModeIsActive()) {
             // Wait for 1 second
@@ -196,7 +197,7 @@ public class BadWolfTeleOp extends LinearOpMode {
         }
 
         // Set right and left servo positions to 1 and 0 respectively
-        rightElevatorServo.setPosition(1);
-        leftElevatorServo.setPosition(0);
+        rightElevatorServo.setPosition(0.55);
+        leftElevatorServo.setPosition(0.45);
     }
 }
