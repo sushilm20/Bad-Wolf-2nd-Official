@@ -204,5 +204,6 @@ public class BadWolfTeleOp extends LinearOpMode {
         rightElevatorServo.setPosition(0.5);
         leftElevatorServo.setPosition(0.5);
         clawRotation.setPosition(0.47);
+        masterClaw.setPosition(0);
     }
 }
