@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Bad Wolf OpMode", group="Linear OpMode")
+@TeleOp(name="BadWolf OpMode", group="Linear OpMode")
 public class BadWolfTeleOp extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront = null;
@@ -104,50 +104,67 @@ public class BadWolfTeleOp extends LinearOpMode {
                 // Raise elevator and also tune for new Misumi and new ultra planetary gears.
                 rightElevator.setPower(1.0);
                 leftElevator.setPower(1.0);
-            } else if (gamepad1.left_bumper && rightElevatorPosition > 20 && leftElevatorPosition > 20) {
+            } else if (gamepad1.left_bumper && rightElevatorPosition > 60 && leftElevatorPosition > 60) {
                 // Lower elevator
-                rightElevator.setPower(-0.5);
-                leftElevator.setPower(-0.5);
+                rightElevator.setPower(-0.9);
+                leftElevator.setPower(-0.9);
             } else {
                 rightElevator.setPower(0.0);
                 leftElevator.setPower(0.0);
             }
 
+
+            // Claw rotation control
+//            if (gamepad1.dpad_left || gamepad2.dpad_left) {
+//                clawRotation.setPosition(0.8);//pick up horizontal samples
+//            } else if (gamepad1.dpad_right || gamepad2.dpad_right) {
+//                clawRotation.setPosition(0.47); // reset to legal point vertical
+//            } else if ((gamepad1.dpad_down || gamepad2.dpad_down)) {
+//                clawRotation.setPosition(0.27); //diagonal right
+//            } else if ((gamepad1.dpad_up || gamepad2.dpad_up)) {
+//                clawRotation.setPosition(0.64); //diagonal left
+//            }
+
+            // Claw rotation control
+            if (gamepad1.dpad_left || gamepad2.dpad_left) {
+                clawRotation.setPosition(0.64);//diagonal left
+            } else if (gamepad1.dpad_right || gamepad2.dpad_right) {
+                clawRotation.setPosition(0.27); // diagonal right
+            } else if ((gamepad1.dpad_down || gamepad2.dpad_down)) {
+                clawRotation.setPosition(0.47); //reset to legal point
+            } else if ((gamepad1.dpad_up || gamepad2.dpad_up)) {
+                clawRotation.setPosition(0.8); //Horizontal pickup
+            }
+
+
             if (gamepad1.a || gamepad2.a) {
                 masterClaw.setPosition(0.5);
+                // Rumble both gamepads
+                gamepad1.rumble(0.5, 0.5, 100); // Left and right rumbling thing n the controller at full strength for 1 sec cuz why not
+                gamepad2.rumble(0.5, 0.5, 100);
             } else {
                 masterClaw.setPosition(0.0);//grip of the claw
             }
 
-            // Claw rotation control
-            if (gamepad1.dpad_left || gamepad2.dpad_left) {
-                clawRotation.setPosition(0.8);//pick up horizontal samples
-            } else if (gamepad1.dpad_right || gamepad2.dpad_right) {
-                clawRotation.setPosition(0.47); // reset to legal point vertical
-            } else if ((gamepad1.dpad_down || gamepad2.dpad_down)) {
-                clawRotation.setPosition(0); //diagonal right
-            } else if ((gamepad1.dpad_up || gamepad2.dpad_up)) {
-                clawRotation.setPosition(1); //diagonal left
+
+            if (gamepad1.b || gamepad2.b) {
+                // reset everything and go to default position
+                rightElevatorServo.setPosition(0.52);
+                leftElevatorServo.setPosition(0.48);
+                clawRotation.setPosition(0.47);
             }
 
-            // Servo control using Y and X buttons
             if (gamepad1.y || gamepad2.y) {
-                // Move servos to specific positions
+                // Move servos to specific positions. This is the hover point
                 rightElevatorServo.setPosition(0.27);//real low to hover. Make higher to hover higher and make lower to hover lower
                 leftElevatorServo.setPosition(0.73);//these two numbers should always add up to hundred. otherwise u are breaking the servos
             }
 
-            if (gamepad1.b || gamepad2.b) {
-                // reset
-                rightElevatorServo.setPosition(0.5);
-                leftElevatorServo.setPosition(0.5);
-                clawRotation.setPosition(0.47);
-            }
-
             if (gamepad1.x || gamepad2.x) {
-                // Check if servos are in the correct positions for grab
+                // Check if servos are in the correct positions for to perform a grab
+                //so if y is pressed and then x is pressed it performs a grab.
                 if (rightElevatorServo.getPosition() == 0.27 && leftElevatorServo.getPosition() == 0.73) {
-                    performGrab();//my sigma function runn pleasee
+                    performGrab();
                 }
             }
 
@@ -155,18 +172,17 @@ public class BadWolfTeleOp extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "leftFront (%.2f), rightFront (%.2f)", leftFrontPower, rightFrontPower);
             telemetry.addData("Motors", "leftBack (%.2f), rightBack (%.2f)", leftBackPower, rightBackPower);
-            telemetry.addData("Accuracy Mode Speed", speedMultiplier);
-            telemetry.addData("Elevator Position", "Right: %d, Left: %d", rightElevatorPosition, leftElevatorPosition);
-            telemetry.addData("Claw Position", clawRotation.getPosition());
+            telemetry.addData("/nAccuracy Mode Speed", speedMultiplier);
+            telemetry.addData("/nElevator Position", "Right: %d, Left: %d", rightElevatorPosition, leftElevatorPosition);
+            telemetry.addData("/nClaw Position", clawRotation.getPosition());
             telemetry.update();
         }
     }
-
     private void performGrab() {
         ElapsedTime timer = new ElapsedTime();
 
         // Open masterClaw to position 0.4
-        masterClaw.setPosition(0.47);
+        masterClaw.setPosition(0.44);
         timer.reset();
         while (timer.seconds() < 0.01 && opModeIsActive()) {
             // Wait for 0.1 seconds
@@ -201,9 +217,9 @@ public class BadWolfTeleOp extends LinearOpMode {
         }
 
         // Set right and left servo positions to 1 and 0 respectively
-        rightElevatorServo.setPosition(0.5);
-        leftElevatorServo.setPosition(0.5);
-        clawRotation.setPosition(0.47);
+        rightElevatorServo.setPosition(0.3);
+        leftElevatorServo.setPosition(0.7);
+//        clawRotation.setPosition(0.47);
         masterClaw.setPosition(0);
     }
 }
