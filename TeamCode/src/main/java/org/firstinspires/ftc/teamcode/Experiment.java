@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="OpMode FOR TESTING ", group="Linear OpMode")
+@TeleOp(name="Testing OpMode", group="Linear OpMode")
 public class Experiment extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront = null;
@@ -84,6 +84,13 @@ public class Experiment extends LinearOpMode {
             double strafe = gamepad1.left_stick_x; // Left/Right
             double turn = gamepad1.right_stick_x; // Turning
 
+            if (gamepad2.left_stick_y != 0 || gamepad2.left_stick_x != 0) {
+                drive = -gamepad2.left_stick_y * 0.4; // 0.1 power for all drive motors
+                strafe = gamepad2.left_stick_x * 0.4;
+                turn = 0; // No turning action for gamepad 2
+                //this is so that there can be more fine action from player 2 than player 1 controlling the entire thing
+            }
+
             // Calculate power for each wheel
             double leftFrontPower = Range.clip((drive + strafe + turn) * speedMultiplier, -1.0, 1.0);
             double rightFrontPower = Range.clip((drive - strafe - turn) * speedMultiplier, -1.0, 1.0);
@@ -104,28 +111,27 @@ public class Experiment extends LinearOpMode {
                 // Raise elevator and also tune for new Misumi and new ultra planetary gears.
                 rightElevator.setPower(1.0);
                 leftElevator.setPower(1.0);
-            } else if (gamepad1.left_bumper && rightElevatorPosition > 20 && leftElevatorPosition > 20) {
+            } else if (gamepad1.left_bumper && rightElevatorPosition > 60 && leftElevatorPosition > 60) {
                 // Lower elevator
-                rightElevator.setPower(-0.5);
-                leftElevator.setPower(-0.5);
+                rightElevator.setPower(-0.9);
+                leftElevator.setPower(-0.9);
             } else {
                 rightElevator.setPower(0.0);
                 leftElevator.setPower(0.0);
             }
 
+            // Claw rotation control with gamepad2 right joystick
+            double clawIncrement = 0.01; // this how much the increment increases by.
+            double rightStickX = gamepad2.right_stick_x;
 
-            // Claw rotation control
-//            if (gamepad1.dpad_left || gamepad2.dpad_left) {
-//                clawRotation.setPosition(0.8);//pick up horizontal samples
-//            } else if (gamepad1.dpad_right || gamepad2.dpad_right) {
-//                clawRotation.setPosition(0.47); // reset to legal point vertical
-//            } else if ((gamepad1.dpad_down || gamepad2.dpad_down)) {
-//                clawRotation.setPosition(0.27); //diagonal right
-//            } else if ((gamepad1.dpad_up || gamepad2.dpad_up)) {
-//                clawRotation.setPosition(0.64); //diagonal left
-//            }
+            if (rightStickX > 0.1) {
+                // rotate right
+                clawRotation.setPosition(Range.clip(clawRotation.getPosition() - clawIncrement, 0.0, 1.0));
+            } else if (rightStickX < -0.1) {
+                // rotates left
+                clawRotation.setPosition(Range.clip(clawRotation.getPosition() + clawIncrement, 0.0, 1.0));
+            }
 
-            // Claw rotation control
             if (gamepad1.dpad_left || gamepad2.dpad_left) {
                 clawRotation.setPosition(0.64);//diagonal left
             } else if (gamepad1.dpad_right || gamepad2.dpad_right) {
@@ -136,7 +142,6 @@ public class Experiment extends LinearOpMode {
                 clawRotation.setPosition(0.8); //Horizontal pickup
             }
 
-
             if (gamepad1.a || gamepad2.a) {
                 masterClaw.setPosition(0.5);
                 // Rumble both gamepads
@@ -146,11 +151,10 @@ public class Experiment extends LinearOpMode {
                 masterClaw.setPosition(0.0);//grip of the claw
             }
 
-
             if (gamepad1.b || gamepad2.b) {
                 // reset everything and go to default position
-                rightElevatorServo.setPosition(0.5);
-                leftElevatorServo.setPosition(0.5);
+                rightElevatorServo.setPosition(0.52);
+                leftElevatorServo.setPosition(0.48);
                 clawRotation.setPosition(0.47);
             }
 
@@ -184,7 +188,7 @@ public class Experiment extends LinearOpMode {
         // Open masterClaw to position 0.4
         masterClaw.setPosition(0.44);
         timer.reset();
-        while (timer.seconds() < 0.01 && opModeIsActive()) {
+        while (timer.seconds() < 0.05 && opModeIsActive()) {
             // Wait for 0.1 seconds
             telemetry.addData("Grab Step", "Opening Claw: %.2f", timer.seconds());
             telemetry.update();
