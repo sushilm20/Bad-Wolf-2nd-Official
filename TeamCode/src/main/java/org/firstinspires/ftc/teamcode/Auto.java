@@ -88,8 +88,8 @@ public class Auto extends LinearOpMode {
         rightFront.setPower(0);
         rightBack.setPower(0);
         masterClaw.setPosition(0.8); // Set master claw to 0.8
-        rightElevatorServo.setPosition(0.5);
-        leftElevatorServo.setPosition(0.5);
+        rightElevatorServo.setPosition(0.7);
+        leftElevatorServo.setPosition(0.3);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

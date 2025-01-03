@@ -77,7 +77,7 @@ public class BadWolfTeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
             // Change speed multiplier based on right trigger
-            speedMultiplier = (gamepad1.left_trigger > 0.1 ? 1.0 : 0.3);
+            speedMultiplier = (gamepad1.left_trigger > 0.1 ? 0.8 : 0.3);
 
             // Mecanum wheel drive calculations
             double drive = -gamepad1.left_stick_y; // Forward/Backward
@@ -111,7 +111,7 @@ public class BadWolfTeleOp extends LinearOpMode {
                 // Raise elevator and also tune for new Misumi and new ultra planetary gears.
                 rightElevator.setPower(1.0);
                 leftElevator.setPower(1.0);
-            } else if (gamepad1.left_bumper && rightElevatorPosition > 60 && leftElevatorPosition > 60) {
+            } else if (gamepad1.left_bumper && rightElevatorPosition > 70 && leftElevatorPosition > 70) {
                 // Lower elevator
                 rightElevator.setPower(-0.9);
                 leftElevator.setPower(-0.9);
@@ -125,7 +125,7 @@ public class BadWolfTeleOp extends LinearOpMode {
             double rightStickX = gamepad2.right_stick_x;
 
             if (rightStickX > 0.1) {
-                // rotate right
+                // rotate right1
                 clawRotation.setPosition(Range.clip(clawRotation.getPosition() - clawIncrement, 0.0, 1.0));
             } else if (rightStickX < -0.1) {
                 // rotates left
@@ -158,8 +158,8 @@ public class BadWolfTeleOp extends LinearOpMode {
 
             if (gamepad1.b || gamepad2.b) {
                 // reset everything and go to default position
-                rightElevatorServo.setPosition(0.52);
-                leftElevatorServo.setPosition(0.48);
+                rightElevatorServo.setPosition(0.54);
+                leftElevatorServo.setPosition(0.46);
                 clawRotation.setPosition(0.47);
             }
 
