@@ -77,7 +77,7 @@ public class BadWolfTeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
             // Change speed multiplier based on right trigger
-            speedMultiplier = (gamepad1.left_trigger > 0.1 ? 0.8 : 0.3);
+            speedMultiplier = (gamepad1.left_trigger > 0.1 ? 1 : 0.4);
 
             // Mecanum wheel drive calculations
             double drive = -gamepad1.left_stick_y; // Forward/Backward
@@ -111,7 +111,7 @@ public class BadWolfTeleOp extends LinearOpMode {
                 // Raise elevator and also tune for new Misumi and new ultra planetary gears.
                 rightElevator.setPower(1.0);
                 leftElevator.setPower(1.0);
-            } else if (gamepad1.left_bumper && rightElevatorPosition > 70 && leftElevatorPosition > 70) {
+            } else if (gamepad1.left_bumper && rightElevatorPosition > 85 && leftElevatorPosition > 85) {
                 // Lower elevator
                 rightElevator.setPower(-0.9);
                 leftElevator.setPower(-0.9);
@@ -165,8 +165,8 @@ public class BadWolfTeleOp extends LinearOpMode {
 
             if (gamepad1.y || gamepad2.y) {
                 // Move servos to specific positions. This is the hover point
-                rightElevatorServo.setPosition(0.27);//real low to hover. Make higher to hover higher and make lower to hover lower
-                leftElevatorServo.setPosition(0.73);//these two numbers should always add up to hundred. otherwise u are breaking the servos
+                rightElevatorServo.setPosition(0.29);//real low to hover. Make higher to hover higher and make lower to hover lower
+                leftElevatorServo.setPosition(0.71);//these two numbers should always add up to hundred. otherwise u are breaking the servos
             }
 
             if (gamepad1.x || gamepad2.x) {
