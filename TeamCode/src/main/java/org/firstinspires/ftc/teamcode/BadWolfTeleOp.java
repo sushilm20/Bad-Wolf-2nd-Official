@@ -107,11 +107,11 @@ public class BadWolfTeleOp extends LinearOpMode {
             int rightElevatorPosition = rightElevator.getCurrentPosition();
             int leftElevatorPosition = leftElevator.getCurrentPosition();
 
-            if (gamepad1.right_bumper && rightElevatorPosition < 2350 && leftElevatorPosition < 2350) {
+            if (gamepad1.right_bumper && rightElevatorPosition < 2400 && leftElevatorPosition < 2400) {
                 // Raise elevator and also tune for new Misumi and new ultra planetary gears.
                 rightElevator.setPower(1.0);
                 leftElevator.setPower(1.0);
-            } else if (gamepad1.left_bumper && rightElevatorPosition > 85 && leftElevatorPosition > 85) {
+            } else if (gamepad1.left_bumper && rightElevatorPosition > 70 && leftElevatorPosition > 70) {
                 // Lower elevator
                 rightElevator.setPower(-0.9);
                 leftElevator.setPower(-0.9);
@@ -133,8 +133,8 @@ public class BadWolfTeleOp extends LinearOpMode {
             }
 
             if (gamepad1.right_trigger>0.2) {
-                rightElevatorServo.setPosition(0.25);
-                leftElevatorServo.setPosition(0.75);
+                rightElevatorServo.setPosition(0.6);
+                leftElevatorServo.setPosition(0.4);
             }
 
             if (gamepad1.dpad_left || gamepad2.dpad_left) {
@@ -165,8 +165,8 @@ public class BadWolfTeleOp extends LinearOpMode {
 
             if (gamepad1.y || gamepad2.y) {
                 // Move servos to specific positions. This is the hover point
-                rightElevatorServo.setPosition(0.29);//real low to hover. Make higher to hover higher and make lower to hover lower
-                leftElevatorServo.setPosition(0.71);//these two numbers should always add up to hundred. otherwise u are breaking the servos
+                rightElevatorServo.setPosition(0.27);//real low to hover. Make higher to hover higher and make lower to hover lower
+                leftElevatorServo.setPosition(0.73);//these two numbers should always add up to hundred. otherwise u are breaking the servos
             }
 
             if (gamepad1.x || gamepad2.x) {
